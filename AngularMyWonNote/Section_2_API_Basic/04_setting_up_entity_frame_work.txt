@@ -1,0 +1,122 @@
+install nuget pack
+
+---------------------------
+
+Microsoft.EntityFrameworkCore.SqlServer       v 8.0.6      infrastructure project
+
+
+Microsoft.EntityFrameworkCore.Design 		v 8.0.6      API  project
+
+
+
+
+
+
+
+
+and we install more later 
+
+
+
+go to infrastructure project    and create a new Folder   >> Data
+
+
+here create a new class >>> StoreContext
+
+using System;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data;
+
+public class StoreContext (DbContextOptions options): DbContext (options)
+{
+      public DbSet <Product> Products  { get; set; }
+}
+
+now need to register this as service 
+
+go programm class
+
+
+
+here is the class
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+
+app.MapControllers();
+
+app.Run();
+
+
+
+
+add this 
+
+
+builder.Services.AddDbContext<StoreContext>(opt =>
+ {
+     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+ }
+);
+
+
+
+
+
+after adding 
+-----------------------
+
+
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<StoreContext>(opt =>
+ {
+     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+ }
+);
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+
+app.MapControllers();
+
+app.Run();
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

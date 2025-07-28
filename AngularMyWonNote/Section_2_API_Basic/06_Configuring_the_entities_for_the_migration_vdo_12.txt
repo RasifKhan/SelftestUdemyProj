@@ -1,0 +1,160 @@
+
+go to store context 
+
+
+here is current 
+
+
+using System;
+using Core.Entites;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data;
+
+public class StoreContext (DbContextOptions options): DbContext (options)
+{
+    public DbSet <Product> Products { get; set; }
+}
+
+
+-------------------------
+
+new 
+
+using System;
+using Core.Entites;
+using Infrastructure.Config;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data;
+
+public class StoreContext(DbContextOptions options) : DbContext(options)
+{
+    public DbSet<Product> Products { get; set; }
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductConfiguration).Assembly);
+    }
+}
+
+
+
+
+
+
+go infrastructure project 
+create new folder > Config   >newclass  Product configuration 
+
+
+using System;
+using Core.Entites;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Config;
+
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
+{
+    public void Configure(EntityTypeBuilder<Product> builder)
+    {
+       builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+        builder.Property(x => x.Name).IsRequired();
+    }
+}
+
+
+eta korar uddesso holo amra migration kore data base create korbo tay table gulor column er 
+design kemon hobe na hobe segulo ekane age vage confugure kore
+then migratin calanor por sey onujeyee design hobe 
+
+
+
+
+now go to terminal
+---------------------- 
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef migrations add InitialCreate -s API -p Infrastructure
+
+
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef database update -s API -p Infrastructure
+Build started...
+Build succeeded.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (354ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [UdemyEcmoDbRepeat];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (161ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [UdemyEcmoDbRepeat] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (15ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [__EFMigrationsHistory] (
+          [MigrationId] nvarchar(150) NOT NULL,
+          [ProductVersion] nvarchar(32) NOT NULL,
+          CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250727182503_InitialCreate'.
+Applying migration '20250727182503_InitialCreate'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Products] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NOT NULL,
+          [Price] decimal(18,2) NOT NULL,
+          [PictureUrl] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Brand] nvarchar(max) NOT NULL,
+          [QuantityInStock] int NOT NULL,
+          CONSTRAINT [PK_Products] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250727182503_InitialCreate', N'8.0.6');
+Done.
+PS F:\Dot Net Practice 2025\SelfTest> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,98 @@
+
+First of all watch the video carefully
+-------------------------------------------
+
+don't lose patient to watch video......
+
+
+create work space inside postman ............
+
+
+
+select blank    > 
+
+For SelfTest project
+
+ only me  >
+
+create
+
+
+inside the post man we can create collection of request 
+
+
+
+i have a json collection file i will import it here 
+
+ok i added the skinet json file 
+
+now time to check api 
+
+run the application first 
+
+
+
+now send add request 
+
+ok data save to the data base .....
+
+api is working 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

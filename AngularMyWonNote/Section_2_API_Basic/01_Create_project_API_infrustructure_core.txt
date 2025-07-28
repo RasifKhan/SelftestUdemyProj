@@ -1,0 +1,65 @@
+
+
+
+here clearly said that how to create new project from CMD
+----------------------------------------------------------
+
+First create a folder >  AngularEcom
+enter folder AngularEcom      select path > cmd enter
+
+
+createte the projects
+-----------------------
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet new sln
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet new webapi -o API -controllers
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet new classlib -o Core
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet new classlib -o Infrastructure
+
+
+
+then add project to the solutions
+-----------------------------------
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet sln add API
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet sln add Core
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet sln add Infrastructure
+
+
+then check the soloution list 
+----------------------------------
+
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet sln list
+
+
+add project references
+------------------------
+
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>cd API
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom\API>dotnet add reference ../Infrastructure
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom\API>cd ..
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>cd Infrastructure
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom\infrastructure>dotnet add reference ../Core
+
+
+ok now restore/build
+-------------------------
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom\infrastructure>cd ..
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet restore
+
+F:\Dot Net Practice 2025\Angular Course Udemy\AngularEcom>dotnet build
+
+-------------------------

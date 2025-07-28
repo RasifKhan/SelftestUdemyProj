@@ -1,0 +1,103 @@
+go to 
+
+applications.Development.json
+---------------------------------
+
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Information"
+    }
+  },
+  "ConnectionStrings":{
+    "DefaultConnection":"Server=.;Database=UdemyEcmoDbRepeat;Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true"
+  }
+}
+
+
+-----------------------------------------
+
+
+now we need to fire a EF migration
+
+-----------------------------------------
+
+
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef
+
+                     _/\__       
+               ---==/    \\      
+         ___  ___   |.    \|\    
+        | __|| __|  |  )   \\\   
+        | _| | _|   \_/ |  //|\\ 
+        |___||_|       /   \\\/\\
+
+Entity Framework Core .NET Command-line Tools 9.0.5
+
+Usage: dotnet ef [options] [command]
+
+Options:
+  -h|--help        Show help information
+  -v|--verbose     Show verbose output.
+  --no-color       Don't colorize output.
+  --prefix-output  Prefix output with level.
+
+Commands:
+  database    Commands to manage the database.
+  dbcontext   Commands to manage DbContext types.
+  migrations  Commands to manage migrations.
+
+Use "dotnet ef [command] --help" for more information about a command.
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef migrations add InitialCreate -s API -p Infrastructure
+Build started...
+Build succeeded.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'. 
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'. 
+No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.       
+Done. To undo this action, use 'ef migrations remove'
+PS F:\Dot Net Practice 2025\SelfTest> 
+
+
+
+
+
+
+got some issues /// read the warning carefully
+
+but the migration folder has been created into our >>> Infrastructure project .....and we will remove this migration Cause some issues has been created too as the warning 
+
+
+
+
+and we will remove the migration 
+
+
+
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef migrations remove -s API -p Infrastructure
+
+
+
+
+
+
+
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef migrations remove -s API -p Infrastructure
+Build started...
+Build succeeded.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+No store type was specified for the decimal property 'Price' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+Removing migration '20250725055153_InitialCreate'.
+Removing model snapshot.
+Done.
+PS F:\Dot Net Practice 2025\SelfTest> 
+
+
+
+
