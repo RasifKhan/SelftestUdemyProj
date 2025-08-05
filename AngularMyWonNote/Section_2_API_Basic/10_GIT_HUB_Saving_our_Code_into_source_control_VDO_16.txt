@@ -1,86 +1,150 @@
-go to the product controller 
------------------------------------
+first of all watch the video if again and again     very symple video
+----------------------------------------------------
 
-here is out final api controller
-
-
-using System;
-using Core.Entites;
-using Infrastructure.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProductsController : ControllerBase
-{
-    private readonly StoreContext context;
-    public ProductsController(StoreContext context)
-    {
-        this.context = context;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
-    {
-        return await context.Products.ToListAsync();
-    }
-
-
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
-    {
-        var product = await context.Products.FindAsync(id);
-        if (product == null) return NotFound();
-
-        return product;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(Product product)
-    {
-        context.Products.Add(product);
-
-        await context.SaveChangesAsync();
-
-        return product;
-    }
-
-
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult> UpdateProduct(int id, Product product)
-    {
-        if (product.Id != id || !ProductExists(id))
-            return BadRequest("Cannot update this product");
-
-        context.Entry(product).State = EntityState.Modified;
-        await context.SaveChangesAsync();
-        return NoContent();
-    }
-
-
-    [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeleteProduct(int id)
-    {
-        var product = await context.Products.FindAsync(id);
-        if (product == null) return NotFound();
-        context.Products.Remove(product);
-
-        await context.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private bool ProductExists(int id)
-    {
-        return context.Products.Any(x => x.Id == id);
-    }
+and the stafs i noted bellow from my old note 
 
 
 
 
 
-}
+log in to GIT HUB Account 
+--------------------------------
+
+then create new Repository  >      xyz
+
+now go to VS code 
+
+> go to source control tab
+
+ > initialize repository
+
+
+
+Commands 
+---------
+
+then go to the > terminal
+
+
+
+got to project directory         then     >> dotnet new list
+
+     PS F:\Dot Net Practice 2025\Backup\AngularEcom> dotnet new list
+
+
+PS F:\Dot Net Practice 2025\Backup\AngularEcom> dotnet new gitignore
+The template "dotnet gitignore file" was created successfully.
+
+and now go source control tab again 
+--------
+
+see the appsetting json ... we are not going to upload the credential to the GIT 
+
+so selecet > appsettings.json and right click > add to git ignore  
+then click plus sign + (in the upper left of source colntroll tab) 
+save all changes by clicking that plus button 
+
+staged changes
+
+
+then write a commit message "End of section 2 "
+
+and then click to commit
+
+then we can see the "publish branch" button 
+
+
+
+then go to the "Git hub "  from browser again to the the condition of the directory 
+
+ok 
+
+go to terminal 
+
+>clear
+
+PS F:\Dot Net Practice 2025\Backup\AngularEcom> git status
+On branch main
+nothing to commit, working tree clean
+PS F:\Dot Net Practice 2025\Backup\AngularEcom> 
+
+then 
+
+go to git hub copy suggested command
+
+PS F:\Dot Net Practice 2025\Backup\AngularEcom> git remote add origin https://github.com/RasifKhan/sniket-2021.git
+
+and then click to the "Publish Branch"
+
+
+and then 
+
+make this notification 
+
+Would you like Visual Studio Code to periodically run "git fetch"?    -No 
+
+
+and go to git hub 
+refresh the the browser 
+wow! my project finally uploaded .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

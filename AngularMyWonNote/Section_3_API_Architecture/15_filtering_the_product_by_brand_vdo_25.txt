@@ -1,0 +1,112 @@
+go to the 
+
+IProductRepository agin
+-------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+
+namespace Core.Interfaces
+{
+    public interface IProductRepository
+    {
+        Task<IReadOnlyList<Product>> GetProductAsync();
+
+        Task<Product?> GetProductByIdAsync(int id);
+
+        Task<IReadOnlyList<string>> GetBrandsAsync();  
+
+        Task<IReadOnlyList<string>> GetTypesAsync(); 
+
+        void AddProduct(Product product);
+
+        void UpdateProduct(Product product);
+
+        void DeleteProduct(Product product);
+
+        bool ProductExists(int id);
+
+        Task<bool> SaveChangesAsync();
+    }
+}
+
+
+here we will make a bit change 
+
+just make change here 
+
+
+ //  Task<IReadOnlyList<Product>> GetProductAsync();
+
+
+        Task<IReadOnlyList<Product>> GetProductAsync(string? brand,string? type); //we will pass prameters here 
+
+
+and then go to the repository to make change 
+-------------
+
+need to change just here 
+
+    public async Task<IReadOnlyList<Product>> GetProductAsync()
+        {
+            return await context.Products.ToListAsync();
+        }
+
+
+modified
+----------
+
+public async Task<IReadOnlyList<Product>> GetProductAsync(string? brand,string?type)
+        {
+            var query = context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(brand))
+                query = query.Where(x => x.Brand == brand);
+
+            if (!string.IsNullOrWhiteSpace(type))
+                query = query.Where(x => x.Type == type);
+
+            return await query.ToListAsync();
+        }
+
+
+
+we need to update product controller too
+----------------------------------------------
+
+
+need to make change here 
+
+
+  [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
+    {
+        return Ok(await repo.GetProductAsync());
+    }
+
+
+modified 
+
+
+ [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand,string? type)
+    {
+        return Ok(await repo.GetProductAsync(brand,type));
+    }
+
+save 
+
+
+
+run appp
+
+
+
+test in post man 
+
+
+
+ok all are working

@@ -1,0 +1,193 @@
+go to the 
+
+IProductRepository
+-------------------
+
+here is the current 
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+
+namespace Core.Interfaces
+{
+    public interface IProductRepository
+    {
+        Task<IReadOnlyList<Product>> GetProductAsync();
+
+        Task<Product?> GetProductByIdAsync(int id);
+
+        void AddProduct(Product product);
+
+        void UpdateProduct(Product product);
+
+        void DeleteProduct(Product product);
+
+        bool ProductExists(int id);
+
+        Task<bool> SaveChangesAsync();
+    }
+}
+
+need to add some new property
+------------------------------
+
+
+
+
+        Task<IReadOnlyList<string>> GetBrandsAsync();  //Newly added
+
+        Task<IReadOnlyList<string>> GetTypesAsync();  //Newly added
+
+
+
+
+
+and go to product repository for implementing 
+-----------------------------
+
+here is the old code 
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data
+{
+    public class ProductRepository(StoreContext context) : IProductRepository       //primary constructor
+    {
+        
+        public void AddProduct(Product product)
+        {
+            context.Products.Add(product);
+        }
+
+        public void DeleteProduct(Product product)
+        {
+            context.Products.Remove(product);
+        }
+
+        public async Task<IReadOnlyList<Product>> GetProductAsync()
+        {
+            return await context.Products.ToListAsync();
+        }
+
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            return await context.Products.FindAsync(id);
+        }
+
+        public bool ProductExists(int id)
+        {
+            return context.Products.Any(x => x.Id == id);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+           return await context.SaveChangesAsync() > 0;
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            context.Entry(product).State = EntityState.Modified;
+        }
+    }
+}
+
+
+
+
+--------------------------
+
+
+add here 
+
+
+
+        public async Task<IReadOnlyList<string>> GetBrandsAsync()
+        {
+            return await context.Products.Select(x => x.Brand)
+                .Distinct()
+                .ToListAsync();
+        }
+
+         public async Task<IReadOnlyList<string>> GetTypesAsync()
+        {
+            return await context.Products.Select(x => x.Type)
+                .Distinct()
+                .ToListAsync();
+        }
+
+
+
+
+-----------------
+--------------------------
+
+then go to the product controller
+----------------------------------------
+--------------------------------------------
+
+ [HttpGet("brands")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
+    {
+        return Ok(await repo.GetBrandsAsync());
+    }
+
+    [HttpGet("types")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
+    {
+        return Ok(await repo.GetTypesAsync());
+    }
+
+
+
+
+
+
+and then go to terminal 
+
+
+
+
+run the application 
+
+
+PS F:\Dot Net Practice 2025\SelfTest> CD API
+PS F:\Dot Net Practice 2025\SelfTest\API> dotnet watch
+
+
+
+and then go to the postman 
+
+
+working 
+
+
+go next 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

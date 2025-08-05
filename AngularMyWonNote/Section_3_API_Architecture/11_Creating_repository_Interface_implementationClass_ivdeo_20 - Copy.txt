@@ -1,0 +1,210 @@
+go core project
+
+
+cretee folder > Interfaces  >create     IProductRepository
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+
+namespace Core.Interfaces
+{
+    public interface IProductRepository
+    {
+        Task<IReadOnlyList<Product>> GetProductAsync();
+
+        Task<Product?> GetProductByIdAsync(int id);
+
+        void AddProduct(Product product);
+
+        void UpdateProduct(Product product);
+
+        void DeleteProduct(Product product);
+
+        bool ProductExists(int id);
+
+        Task<bool> SaveChangesAsync();
+    }
+}
+
+
+
+
+
+now go Infrustructure project   >> go Data folder 
+
+create new class file >> ProductRepository
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+using Core.Interfaces;
+
+namespace Infrastructure.Data
+{
+    public class ProductRepository : IProductRepository
+    {
+        public void AddProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<Product>> GetProductAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Product?> GetProductByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ProductExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+and then add the service to our api programm cs 
+
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+
+
+
+and go to video 21: Implementing the  repositoy methods
+-----------------------------------------------------------------------------------
+
+
+
+here modify the ProductRepository
+---------------------------
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Entites;
+using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Data
+{
+    public class ProductRepository(StoreContext context) : IProductRepository       //primary constructor
+    {
+        
+
+        ///////////////-------------Old concept
+        // private readonly StoreContext context;
+
+        // public ProductRepository(StoreContext context)
+        // {
+        //     this.context = context;
+        // }
+
+        public void AddProduct(Product product)
+        {
+            context.Products.Add(product);
+        }
+
+        public void DeleteProduct(Product product)
+        {
+            context.Products.Remove(product);
+        }
+
+        public async Task<IReadOnlyList<Product>> GetProductAsync()
+        {
+            return await context.Products.ToListAsync();
+        }
+
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            return await context.Products.FindAsync(id);
+        }
+
+        public bool ProductExists(int id)
+        {
+            return context.Products.Any(x => x.Id == id);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+           return await context.SaveChangesAsync() > 0;
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            context.Entry(product).State = EntityState.Modified;
+        }
+    }
+}
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

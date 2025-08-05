@@ -1,0 +1,254 @@
+
+go to our course assesment folder >seed data> copy two files delivery json and product json.
+
+and then go to vs code > Infrustructure >data > create a new folder >  seed data  
+
+may file will not be copied here so we need to follow another way 
+
+
+
+seed data right click>  revel in fileexplorer  and go seed data then paste here ok
+
+
+
+and then inside the Data folder> create another file > StoreContextSeed.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Core.Entites;
+
+namespace Infrastructure.Data.SeedData
+{
+    public class StoreContextSeed
+    {
+        public static async Task SeedAsync(StoreContext context)
+        {
+            if (!context.Products.Any())
+            {
+                var productsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/products.json");
+
+                var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+
+                if (products == null) return;
+
+                context.Products.AddRange(products);
+
+                await context.SaveChangesAsync();
+            }
+        }
+    }
+}
+
+
+-------------
+
+now go to the program.cs
+
+
+
+add this before run 
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<StoreContext>();
+    await context.Database.MigrateAsync();
+    await StoreContextSeed.SeedAsync(context);
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex);
+    throw;
+    
+}
+
+
+
+
+
+now we drop our data base for checking seed working or not 
+
+
+go terminal 
+
+PS F:\Dot Net Practice 2025\SelfTest> dotnet ef database drop -p Infrastructure -s API
+Build started...
+Build succeeded.
+Are you sure you want to drop the database 'UdemyEcmoDbRepeat' on server '.'? (y/N)
+y
+Dropping database 'UdemyEcmoDbRepeat' on server '.'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [UdemyEcmoDbRepeat] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (190ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      DROP DATABASE [UdemyEcmoDbRepeat];
+Successfully dropped database 'UdemyEcmoDbRepeat'.
+
+
+
+
+dropped
+
+
+
+now we will check seeding working or not
+-------------------------------------------
+
+
+
+PS F:\Dot Net Practice 2025\SelfTest> cd API
+PS F:\Dot Net Practice 2025\SelfTest\API> dotnet watch
+dotnet watch 🔥 Hot reload enabled. For a list of supported edits, see https://aka.ms/dotnet/hot-reload.
+  💡 Press "Ctrl + R" to restart.
+dotnet watch 🔧 Building...
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Core -> F:\Dot Net Practice 2025\SelfTest\Core\bin\Debug\net8.0\Core.dll
+  Infrastructure -> F:\Dot Net Practice 2025\SelfTest\Infrastructure\bin\Debug\net8.0\Infrastructure.dll
+  API -> F:\Dot Net Practice 2025\SelfTest\API\bin\Debug\net8.0\API.dll
+dotnet watch 🚀 Started
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (462ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [UdemyEcmoDbRepeat];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (146ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [UdemyEcmoDbRepeat] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (35ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [__EFMigrationsHistory] (
+          [MigrationId] nvarchar(150) NOT NULL,
+          [ProductVersion] nvarchar(32) NOT NULL,
+          CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (49ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250727182503_InitialCreate'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Products] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NOT NULL,
+          [Price] decimal(18,2) NOT NULL,
+          [PictureUrl] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Brand] nvarchar(max) NOT NULL,
+          [QuantityInStock] int NOT NULL,
+          CONSTRAINT [PK_Products] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250727182503_InitialCreate', N'8.0.6');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Products] AS [p]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (307ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p5='?' (DbType = Int32), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p12='?' (DbType = Int32), @p13='?' (Size = 4000), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p19='?' (DbType = Int32), @p20='?' (Size = 4000), @p21='?' (Size = 4000), @p22='?' (Size = 4000), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p26='?' (DbType = Int32), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (Size = 4000), @p31='?' (Size = 4000), @p32='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p33='?' (DbType = Int32), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p40='?' (DbType = Int32), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Precision = 18) (Scale = 2) 
+(DbType = Decimal), @p47='?' (DbType = Int32), @p48='?' (Size = 4000), @p49='?' (Size = 4000), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p54='?' (DbType = Int32), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (Size = 4000), @p58='?' (Size = 4000), @p59='?' (Size = 4000), @p60='?' (Precision = 18) (Scale = 2) (DbType = 
+Decimal), @p61='?' (DbType = Int32), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (Size = 4000), @p67='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p68='?' (DbType = Int32), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Precision = 18) (Scale = 2) (DbType = Decimal), 
+@p75='?' (DbType = Int32), @p76='?' (Size = 4000), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 
+4000), @p81='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p82='?' (DbType = Int32), @p83='?' (Size = 4000), @p84='?' (Size = 4000), 
+@p85='?' (Size = 4000), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p89='?' (DbType = Int32), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (Size = 4000), @p94='?' (Size = 4000), @p95='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p96='?' (DbType = Int32), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p103='?' (DbType = Int32), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p110='?' (DbType = Int32), @p111='?' (Size = 4000), @p112='?' (Size = 4000), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p117='?' (DbType = Int32), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (Size = 4000), @p121='?' (Size = 4000), @p122='?' (Size = 4000), 
+@p123='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p124='?' (DbType = Int32), @p125='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      MERGE [Products] USING (
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, 0),
+      (@p7, @p8, @p9, @p10, @p11, @p12, @p13, 1),
+      (@p14, @p15, @p16, @p17, @p18, @p19, @p20, 2),
+      (@p21, @p22, @p23, @p24, @p25, @p26, @p27, 3),
+      (@p28, @p29, @p30, @p31, @p32, @p33, @p34, 4),
+      (@p35, @p36, @p37, @p38, @p39, @p40, @p41, 5),
+      (@p42, @p43, @p44, @p45, @p46, @p47, @p48, 6),
+      (@p49, @p50, @p51, @p52, @p53, @p54, @p55, 7),
+      (@p56, @p57, @p58, @p59, @p60, @p61, @p62, 8),
+      (@p63, @p64, @p65, @p66, @p67, @p68, @p69, 9),
+      (@p70, @p71, @p72, @p73, @p74, @p75, @p76, 10),
+      (@p77, @p78, @p79, @p80, @p81, @p82, @p83, 11),
+      (@p84, @p85, @p86, @p87, @p88, @p89, @p90, 12),
+      (@p91, @p92, @p93, @p94, @p95, @p96, @p97, 13),
+      (@p98, @p99, @p100, @p101, @p102, @p103, @p104, 14),
+      (@p105, @p106, @p107, @p108, @p109, @p110, @p111, 15),
+      (@p112, @p113, @p114, @p115, @p116, @p117, @p118, 16),
+      (@p119, @p120, @p121, @p122, @p123, @p124, @p125, 17)) AS i ([Brand], [Description], [Name], [PictureUrl], [Price], [QuantityInStock], [Type], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([Brand], [Description], [Name], [PictureUrl], [Price], [QuantityInStock], [Type])
+      VALUES (i.[Brand], i.[Description], i.[Name], i.[PictureUrl], i.[Price], i.[QuantityInStock], i.[Type])
+      OUTPUT INSERTED.[Id], i._Position;
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: https://localhost:5001
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: F:\Dot Net Practice 2025\SelfTest\API
+
+
+
+wow worked 
+
+
+now go to postman and check
+---
+
+all are working
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
